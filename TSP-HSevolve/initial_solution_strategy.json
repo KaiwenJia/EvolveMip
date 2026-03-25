@@ -1,0 +1,8 @@
+{
+  "prompt_template": "Analyze the following node coordinate distribution and recommend the optimal initial starting point (return node index) and generation strategy for the TSP problem, in the format of JSON：\n{node_coords}",
+  "default_strategy": {
+    "optimal_start": 0,
+    "strategy": "nearest_neighbor_2End"
+  },
+  "output_key": "initial_solution_params"
+}

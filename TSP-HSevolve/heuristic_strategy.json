@@ -1,0 +1,9 @@
+{
+  "prompt_template": "Analyze the characteristics of the following distance matrix and generate a distance matrix weighting strategy for the TSP problem. Parameters such as thresholds and weight coefficients need to be returned, in JSON：\n{distance_matrix}",
+  "default_params": {
+    "threshold": 50.0,
+    "weight_coeff": 0.7,
+    "distance_factor": 1.2
+  },
+  "output_key": "heuristic_params"
+}

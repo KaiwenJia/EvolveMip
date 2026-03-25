@@ -1,0 +1,12 @@
+{
+  "n_instances": 1000,
+  "class_counts": {
+    "hard_timeout": 399,
+    "error": 2,
+    "too_easy": 74,
+    "medium": 229,
+    "hard": 175,
+    "easy": 63,
+    "hard_timeout_small_gap": 58
+  }
+}

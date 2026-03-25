@@ -1,0 +1,4 @@
+{
+  "prompt_template": "You are an expert in Traveling Salesman Problem (TSP) optimization algorithms.\n\nGiven the following distance matrix for a TSP instance:\n{distance_matrix}\n\nDesign and write a Python function that applies a guided weighting strategy to improve local search heuristics. The function should:\n1. Analyze the distance matrix characteristics\n2. Apply intelligent weighting to guide the search toward shorter edges\n3. Return the modified distance matrix\n\nRequirements:\n- Input: dist_matrix (numpy array of shape (n, n))\n- Output: modified_dist_matrix (numpy array)\n- Preserve matrix symmetry and zeros on diagonal\n- Add explanatory comments\n\nWrite ONLY the Python function code, starting with 'def' and including all necessary imports at the top.\nExample format:\nimport numpy as np\ndef guided_weighting(dist_matrix):\n    '''Your strategy here'''\n    return modified_matrix",
+  "output_key": "heuristic_code"
+}
