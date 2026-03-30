@@ -1,6 +1,5 @@
 import inspect
 import json
-import os
 from typing import List
 
 from baseline_branchrule import BaselinePseudoCostBranchrule
@@ -8,9 +7,51 @@ from branchrule_eval import benchmark_branchrule, summarize_results
 from llm_codegen import LLMBranchruleGenerator
 
 
-API_KEY = os.getenv("OPENAI_API_KEY", "YOUR_API_KEY")
-BASE_URL = os.getenv("OPENAI_BASE_URL", "YOUR_BASE_URL")
-MODEL_NAME = os.getenv("OPENAI_MODEL_NAME", "gemini-2.5-flash")
+# ============================================================
+# LLM 配置区：只需要改这里
+# ============================================================
+
+LLM_PROVIDER = "deepseek"
+# 可选：
+# "deepseek"
+# "openai"
+# "custom_proxy"
+
+LLM_CONFIGS = {
+    "deepseek": {
+        "api_key": "sk-620969b0df4a4a759494bb878ec258b9",
+        "base_url": "https://api.deepseek.com",
+        "model_name": "deepseek-chat",
+    },
+    "openai": {
+        "api_key": "你的_openai_api_key",
+        "base_url": None,   # OpenAI 官方可留空
+        "model_name": "gpt-4.1-mini",
+    },
+    "custom_proxy": {
+        "api_key": "你的_proxy_api_key",
+        "base_url": "https://your-proxy-base-url/v1",
+        "model_name": "gemini-2.5-flash",
+    },
+}
+
+
+def get_llm_config(provider: str):
+    if provider not in LLM_CONFIGS:
+        raise ValueError(
+            f"Unknown LLM provider: {provider}. "
+            f"Available providers: {list(LLM_CONFIGS.keys())}"
+        )
+
+    cfg = LLM_CONFIGS[provider]
+
+    api_key = cfg.get("api_key")
+    if not api_key or api_key.startswith("你的_"):
+        raise ValueError(
+            f"Provider '{provider}' 的 api_key 还没填写。"
+        )
+
+    return cfg
 
 
 def build_feedback(baseline_summary, candidate_summary) -> str:
@@ -64,6 +105,15 @@ def get_mps_files() -> List[str]:
 def main():
     mps_files = get_mps_files()
 
+    llm_cfg = get_llm_config(LLM_PROVIDER)
+
+    print("=== Using LLM Config ===")
+    print(json.dumps({
+        "provider": LLM_PROVIDER,
+        "base_url": llm_cfg["base_url"],
+        "model_name": llm_cfg["model_name"],
+    }, indent=2, ensure_ascii=False))
+
     baseline_rows = benchmark_branchrule(
         mps_files,
         branchrule_cls=BaselinePseudoCostBranchrule,
@@ -77,9 +127,9 @@ def main():
     baseline_code = inspect.getsource(BaselinePseudoCostBranchrule)
 
     generator = LLMBranchruleGenerator(
-        api_key=API_KEY,
-        base_url=BASE_URL,
-        model_name=MODEL_NAME,
+        api_key=llm_cfg["api_key"],
+        base_url=llm_cfg["base_url"],
+        model_name=llm_cfg["model_name"],
     )
 
     initial_feedback = (
@@ -98,6 +148,9 @@ def main():
     print(generated_code)
 
     result_payload = {
+        "llm_provider": LLM_PROVIDER,
+        "llm_base_url": llm_cfg["base_url"],
+        "llm_model_name": llm_cfg["model_name"],
         "baseline_rows": baseline_rows,
         "baseline_summary": baseline_summary,
         "generated_code": generated_code,
