@@ -19,7 +19,7 @@ LLM_PROVIDER = "deepseek"
 
 LLM_CONFIGS = {
     "deepseek": {
-        "api_key": "sk-620969b0df4a4a759494bb878ec258b9",
+        "api_key": "",
         "base_url": "https://api.deepseek.com",
         "model_name": "deepseek-chat",
     },
